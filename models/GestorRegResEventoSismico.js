@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
 const EventoSismico = require('./EventoSismico');
-const { PendienteRevision, Autodetectado } = require('./Estado');
+const { PendienteRevision, Autodetectado, BloqueadoEnRevision, Rechazado, SinRevision, DerivadoAExperto, Confirmado } = require('./Estado');
 const Sesion = require('./Sesion');
 const Usuario = require('./Usuario');
 

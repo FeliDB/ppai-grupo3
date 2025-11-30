@@ -1,4 +1,4 @@
-const { PendienteRevision, BloqueadoEnRevision } = require('./Estado');
+const { PendienteRevision, BloqueadoEnRevision, Rechazado, Confirmado, DerivadoAExperto } = require('./Estado');
 const CambioEstado = require('./CambioEstado');
 
 class EventoSismico {
@@ -61,33 +61,31 @@ class EventoSismico {
     }
 
     bloquear() {
-        if (this.estado instanceof PendienteRevision) {
-            const cambioActual = this.buscarUltimoCambioEstado();
-            if (cambioActual) {
-                cambioActual.setFechaHoraFin();
-            }
-            
-            const nuevoEstado = this.estado.crearEstadoSiguiente();
-            const nuevoCambio = this.estado.crearCambioEstado();
-            
-            this.agregarCambioEstado(nuevoCambio);
-            this.setEstadoActual(nuevoEstado);
+        // Paso 28: EventoSismico.bloquear() delega al estado
+        const cambioActual = this.buscarUltimoCambioEstado();
+        if (cambioActual) {
+            cambioActual.setFechaHoraFin(); // Paso 30
         }
+        
+        const nuevoEstado = this.estado.crearEstadoSiguiente(); // Paso 31
+        const nuevoCambio = this.estado.crearCambioEstado(); // Paso 33
+        
+        this.agregarCambioEstado(nuevoCambio); // Paso 35
+        this.setEstadoActual(nuevoEstado); // Paso 36
     }
 
     rechazar() {
-        if (this.estado instanceof BloqueadoEnRevision) {
-            const cambioActual = this.buscarUltimoCambioEstado();
-            if (cambioActual) {
-                cambioActual.setFechaHoraFin();
-            }
-            
-            const nuevoEstado = this.estado.crearEstadoSiguiente();
-            const nuevoCambio = this.estado.crearCambioEstado();
-            
-            this.agregarCambioEstado(nuevoCambio);
-            this.setEstadoActual(nuevoEstado);
+        // Paso 64: EventoSismico.rechazar() delega al estado
+        const cambioActual = this.buscarUltimoCambioEstado();
+        if (cambioActual) {
+            cambioActual.setFechaHoraFin(); // Paso 66
         }
+        
+        const nuevoEstado = this.estado.crearEstadoSiguiente(); // Paso 67
+        const nuevoCambio = this.estado.crearCambioEstado(); // Paso 69
+        
+        this.agregarCambioEstado(nuevoCambio); // Paso 71
+        this.setEstadoActual(nuevoEstado); // Paso 72
     }
 
     buscarUltimoCambioEstado() {

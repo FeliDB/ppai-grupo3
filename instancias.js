@@ -1,6 +1,6 @@
 // Instancias concretas de todas las clases del sistema
 const EventoSismico = require('./models/EventoSismico');
-const { PendienteRevision, BloqueadoEnRevision, Rechazado, Autodetectado } = require('./models/Estado');
+const { PendienteRevision, BloqueadoEnRevision, Rechazado, Autodetectado, SinRevision, DerivadoAExperto, Confirmado } = require('./models/Estado');
 const CambioEstado = require('./models/CambioEstado');
 const Usuario = require('./models/Usuario');
 const Sesion = require('./models/Sesion');
@@ -19,16 +19,23 @@ const PantRegResEventoSismico = require('./models/PantRegResEventoSismico');
 // Crear instancias concretas
 console.log('=== CREANDO INSTANCIAS CONCRETAS ===');
 
-// 1. Estados
+// 1. Estados - Patrón State completo
+const estadoAutodetectado = new Autodetectado();
 const estadoPendiente = new PendienteRevision();
 const estadoBloqueado = new BloqueadoEnRevision();
 const estadoRechazado = new Rechazado();
-const estadoAutodetectado = new Autodetectado();
-console.log('Estados creados:', {
+const estadoSinRevision = new SinRevision();
+const estadoDerivadoAExperto = new DerivadoAExperto();
+const estadoConfirmado = new Confirmado();
+
+console.log('Estados creados (Patrón State):', {
+    autodetectado: estadoAutodetectado.nombreEstado,
     pendiente: estadoPendiente.nombreEstado,
     bloqueado: estadoBloqueado.nombreEstado,
     rechazado: estadoRechazado.nombreEstado,
-    autodetectado: estadoAutodetectado.nombreEstado
+    sinRevision: estadoSinRevision.nombreEstado,
+    derivadoAExperto: estadoDerivadoAExperto.nombreEstado,
+    confirmado: estadoConfirmado.nombreEstado
 });
 
 // 2. Usuario y Sesión
@@ -89,16 +96,41 @@ const gestor = new GestorRegResEventoSismico();
 const pantalla = new PantRegResEventoSismico();
 console.log('Gestor y pantalla creados');
 
-// 9. Demostrar flujo de estados
-console.log('\n=== DEMOSTRANDO FLUJO DE ESTADOS ===');
+// 9. Demostrar flujo de estados - Patrón State
+console.log('\n=== DEMOSTRANDO PATRÓN STATE ===');
 console.log('Estado inicial:', eventoSismico1.estado.nombreEstado);
 
-// Bloquear evento
+// Flujo principal: PendienteRevision -> BloqueadoEnRevision -> Rechazado
 eventoSismico1.bloquear();
 console.log('Después de bloquear:', eventoSismico1.estado.nombreEstado);
 
-// Rechazar evento
 eventoSismico1.rechazar();
 console.log('Después de rechazar:', eventoSismico1.estado.nombreEstado);
+
+// Crear otro evento para demostrar otras transiciones
+const eventoSismico2 = new EventoSismico(
+    new Date('2024-01-16T14:20:00'),
+    -32.8895,
+    -68.8458,
+    -32.8895,
+    -68.8458,
+    4.8
+);
+eventoSismico2.estado = new PendienteRevision();
+eventoSismico2.agregarCambioEstado(new CambioEstado());
+
+console.log('\nEvento 2 - Estado inicial:', eventoSismico2.estado.nombreEstado);
+eventoSismico2.bloquear();
+console.log('Evento 2 - Después de bloquear:', eventoSismico2.estado.nombreEstado);
+eventoSismico2.confirmar();
+console.log('Evento 2 - Después de confirmar:', eventoSismico2.estado.nombreEstado);
+
+// Demostrar transición inválida
+console.log('\n=== DEMOSTRANDO TRANSICIONES INVÁLIDAS ===');
+try {
+    estadoRechazado.bloquear(); // Esto debe fallar
+} catch (error) {
+    console.log('Error esperado:', error.message);
+}
 
 console.log('\n=== INSTANCIAS CREADAS EXITOSAMENTE ===');
