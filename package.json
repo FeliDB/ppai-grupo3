@@ -1,0 +1,13 @@
+{
+  "name": "sistema-sismico",
+  "version": "1.0.0",
+  "description": "Sistema de registro de resultados de eventos sísmicos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js --watch"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.5"
+  }
+}
